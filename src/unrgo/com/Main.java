@@ -16,7 +16,7 @@ public class Main {
         String catalogBase = "catalog.dat";
         String orderBase = "orders.dat";
 
-        goods = start.getCatalogFromBase(catalogBase);
+        goods = start.getCatalogFromBase();
 
         int chosenOperation = 0;
         System.out.println('\t' + "Добро пожаловать в тест-версию Simple Shop");

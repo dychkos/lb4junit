@@ -87,7 +87,7 @@ class CatalogTest {
         list.add(this.catalog);
         this.catalog.saveCatalogToBase(list, "catalog.dat");
         new ArrayList();
-        ArrayList<Catalog> list2 = this.catalog.getCatalogFromBase("catalog.dat");
+        ArrayList<Catalog> list2 = this.catalog.getCatalogFromBase();
         Assertions.assertEquals(list.toString(), list2.toString());
     }
 

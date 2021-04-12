@@ -19,8 +19,17 @@ class Catalog implements Serializable {
         this.count = count;
     }
 
+
     public Catalog() {
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -34,6 +43,10 @@ class Catalog implements Serializable {
 
     public int getCount() {
         return count;
+    }
+
+    public int getPrice() {
+        return price;
     }
 
     public void setCount(int price) {
@@ -71,18 +84,48 @@ class Catalog implements Serializable {
         Catalog good = new Catalog();
         Catalog newGood = good.generateGood();
         goods.add(newGood);
+        pushNewGoodInBase(newGood);
 
 
     }
+    //добавить в каталог новый товар в базу
+    private void pushNewGoodInBase(Catalog good) {
 
-    public void deleteGood(ArrayList<Catalog> list) {
+        try  {
+            DAO_Catalog dao = new DAO_Catalog();
+            dao.insert(good);
+
+        } catch (Exception ex) {
+
+            System.out.println(ex.getMessage());
+        }
+
+
+
+    }
+    //удалить товар из базы
+    private void deleteFromBase(Catalog good) {
+        int id = good.getId();
+        try {
+            DAO_Catalog dao = new DAO_Catalog();
+            dao.delete(id);
+
+        } catch (Exception ex) {
+
+            System.out.println(ex.getMessage());
+        }
+    }
+
+
+
+        public void deleteGood(ArrayList<Catalog> list) {
         int operation = -1;
         while (operation == -1) {
             operation = searchGood(list,1);
 
         }
 
-
+        deleteFromBase(list.get(operation));
         list.remove(operation);
     }
 
@@ -95,9 +138,8 @@ class Catalog implements Serializable {
 
     //сохранить каталог в базу
     public void saveCatalogToBase(ArrayList<Catalog> goods, String filename) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
-            oos.writeObject(goods);
-            System.out.println("Данные обновлены!");
+        try  {
+
         } catch (Exception ex) {
 
             System.out.println(ex.getMessage());
@@ -121,11 +163,12 @@ class Catalog implements Serializable {
 
 
     //получить каталог из базы
-    public ArrayList<Catalog> getCatalogFromBase(String fname) {
+    public ArrayList<Catalog> getCatalogFromBase() {
         ArrayList<Catalog> p = new ArrayList<Catalog>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fname))) {
+        DAO_Catalog dao=new DAO_Catalog();
+        try  {
 
-            p = ((ArrayList<Catalog>) ois.readObject());
+            p = dao.getAll();
         } catch (Exception ex) {
 
             System.out.println(ex.getMessage());
