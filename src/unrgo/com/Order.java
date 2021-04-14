@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class Order {
 
-
+    private int id;
     private String name;
     private String phone;
     private ArrayList<Catalog> chosenCatalog = new ArrayList<Catalog>();
@@ -32,6 +32,7 @@ public class Order {
     public Order() {
 
     }
+
     public ArrayList<Catalog> getChosenCatalog(){
         return this.chosenCatalog;
     }
@@ -43,6 +44,13 @@ public class Order {
         return this.phone;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
 
     public void setName(String name) {
         this.name = name;

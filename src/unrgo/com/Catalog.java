@@ -12,7 +12,7 @@ class Catalog implements Serializable {
     private int count;
 
 
-    public Catalog( String name, String producer, int price, int count) {
+    public Catalog(String name, String producer, int price, int count) {
         this.name = name;
         this.producer = producer;
         this.price = price;
@@ -56,7 +56,7 @@ class Catalog implements Serializable {
 
     @Override
     public String toString() {
-        return name + " " + producer + ", price=" + price + " count " + count;
+        return name + ", " + producer + ", price=" + price + " count " + count;
     }
 
 
@@ -88,10 +88,11 @@ class Catalog implements Serializable {
 
 
     }
-    //добавить в каталог новый товар в базу
-    private void pushNewGoodInBase(Catalog good) {
 
-        try  {
+    //добавить в каталог новый товар в базу
+    public void pushNewGoodInBase(Catalog good) {
+
+        try {
             DAO_Catalog dao = new DAO_Catalog();
             dao.insert(good);
 
@@ -99,12 +100,11 @@ class Catalog implements Serializable {
 
             System.out.println(ex.getMessage());
         }
-
-
-
     }
+
+
     //удалить товар из базы
-    private void deleteFromBase(Catalog good) {
+    public void deleteFromBase(Catalog good) {
         int id = good.getId();
         try {
             DAO_Catalog dao = new DAO_Catalog();
@@ -116,12 +116,25 @@ class Catalog implements Serializable {
         }
     }
 
+    //поиск  в базе
+    public ArrayList<Catalog> findInBase(Catalog good) {
+        ArrayList<Catalog> catalogs = null;
+        try {
+            DAO_Catalog dao = new DAO_Catalog();
+            catalogs = dao.find(good);
+
+        } catch (Exception ex) {
+
+            System.out.println(ex.getMessage());
+        }
+        return catalogs;
+    }
 
 
-        public void deleteGood(ArrayList<Catalog> list) {
+    public void deleteGood(ArrayList<Catalog> list) {
         int operation = -1;
         while (operation == -1) {
-            operation = searchGood(list,1);
+            operation = searchGood(list, 1);
 
         }
 
@@ -138,7 +151,7 @@ class Catalog implements Serializable {
 
     //сохранить каталог в базу
     public void saveCatalogToBase(ArrayList<Catalog> goods, String filename) {
-        try  {
+        try {
 
         } catch (Exception ex) {
 
@@ -147,7 +160,7 @@ class Catalog implements Serializable {
 
     }
 
-    private ArrayList<Catalog> searchValueInList(String searchName, ArrayList<Catalog> list, String trueName, Catalog sCatalog,ArrayList<Catalog> foundGoods) {
+    private ArrayList<Catalog> searchValueInList(String searchName, ArrayList<Catalog> list, String trueName, Catalog sCatalog, ArrayList<Catalog> foundGoods) {
 
         if (trueName.equals(searchName)) {
             foundGoods.add(sCatalog);
@@ -156,7 +169,7 @@ class Catalog implements Serializable {
         return foundGoods;
     }
 
-    public void reduceCount(int countToReduce,Catalog ct) {
+    public void reduceCount(int countToReduce, Catalog ct) {
         int newCount = ct.getCount() - countToReduce;
         ct.setCount(newCount);
     }
@@ -165,8 +178,8 @@ class Catalog implements Serializable {
     //получить каталог из базы
     public ArrayList<Catalog> getCatalogFromBase() {
         ArrayList<Catalog> p = new ArrayList<Catalog>();
-        DAO_Catalog dao=new DAO_Catalog();
-        try  {
+        DAO_Catalog dao = new DAO_Catalog();
+        try {
 
             p = dao.getAll();
         } catch (Exception ex) {
@@ -176,7 +189,21 @@ class Catalog implements Serializable {
         return p;
 
     }
-    public int chooseMethodToSearch(){
+
+    //очистить базу данных
+    public void deleteAllData() {
+        DAO_Catalog dao = new DAO_Catalog();
+        try {
+
+            dao.deleteAll();
+        } catch (Exception ex) {
+
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
+    public int chooseMethodToSearch() {
         int chosenOperation = 0;
         System.out.println("Укажите критерий поиска :" + '\n' + "1- За назвою" + '\n' + "2-За виробником" + '\n');
         Scanner sc = new Scanner(System.in);
@@ -193,7 +220,7 @@ class Catalog implements Serializable {
 
         Scanner scan = new Scanner(System.in);
         int soughtIndex = -1;
-        ArrayList<Catalog> foundGoods=new ArrayList<Catalog>();
+        ArrayList<Catalog> foundGoods = new ArrayList<Catalog>();
         String searchName;
         String trueName;
         switch (chosenOperation) {
@@ -202,16 +229,16 @@ class Catalog implements Serializable {
                 searchName = scan.nextLine();
                 for (Catalog sCatalog : list) {
                     trueName = sCatalog.getName();
-                    foundGoods= searchValueInList(searchName, list, trueName, sCatalog,foundGoods);
+                    foundGoods = searchValueInList(searchName, list, trueName, sCatalog, foundGoods);
 
 
                 }
-                if(foundGoods.size()>1){
-                    searchGood(foundGoods,1);
+                if (foundGoods.size() > 1) {
+                    searchGood(foundGoods, 1);
                 }
                 try {
                     soughtIndex = list.indexOf(foundGoods.get(0));
-                }catch (IndexOutOfBoundsException ex){
+                } catch (IndexOutOfBoundsException ex) {
                     System.out.println("Повторите ввод!");
                 }
 
@@ -221,17 +248,17 @@ class Catalog implements Serializable {
                 searchName = scan.nextLine();
                 for (Catalog sCatalog : list) {
                     trueName = sCatalog.getProducer();
-                    foundGoods= searchValueInList(searchName, list, trueName, sCatalog,foundGoods);
+                    foundGoods = searchValueInList(searchName, list, trueName, sCatalog, foundGoods);
 
 
                 }
-                if(foundGoods.size()>1){
+                if (foundGoods.size() > 1) {
                     System.out.println("Найдено несколько совпадений!");
-                    searchGood(foundGoods,1);
+                    searchGood(foundGoods, 1);
                 }
                 try {
                     soughtIndex = list.indexOf(foundGoods.get(0));
-                }catch (IndexOutOfBoundsException ex){
+                } catch (IndexOutOfBoundsException ex) {
                     System.out.println("EXEPTION");
                 }
 
@@ -277,7 +304,7 @@ class Catalog implements Serializable {
                     System.out.println("Удалено!");
                     break;
                 case 3:
-                    searchGood(list,chooseMethodToSearch());
+                    searchGood(list, chooseMethodToSearch());
                     break;
                 case 4:
                     showCatalog(list);

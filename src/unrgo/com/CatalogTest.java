@@ -52,7 +52,7 @@ class CatalogTest {
         System.setIn(System.in);
     }
 
-    @Test
+    /*@Test
     void showCatalog() {
         ArrayList<Catalog> list = new ArrayList();
         list.add(this.catalog);
@@ -75,21 +75,85 @@ class CatalogTest {
         Assertions.assertEquals(expectedStirng, consoleOutput);
     }
 
+     */
+
     @Test
     void reduceCount() {
         this.catalog.reduceCount(10, this.catalog);
         Assertions.assertEquals(190, this.catalog.getCount());
     }
+    @Test
+    void getCatalogFromBase(){
+        ArrayList<Catalog> p = null;
+        this.catalog.deleteAllData();
+        this.catalog.pushNewGoodInBase(this.catalog);
+        p=this.catalog.getCatalogFromBase();
+
+
+        Assertions.assertFalse(p.isEmpty());
+
+    }
+    @Test
+    void deleteAllData(){
+        this.catalog.deleteAllData();
+        ArrayList<Catalog> list = this.catalog.getCatalogFromBase();
+        Assertions.assertEquals(list.isEmpty(),true);
+    }
 
     @Test
+    void  deleteFromBase(){
+        boolean result = false;
+        ArrayList<Catalog> newCt=null;
+        this.catalog.deleteAllData();
+        this.catalog.pushNewGoodInBase(this.catalog);
+        this.catalog.deleteFromBase(this.catalog);
+        newCt=this.catalog.findInBase(this.catalog);
+
+
+        Assertions.assertTrue(newCt.isEmpty());
+    }
+    @Test
+    void findInBase(){
+        ArrayList<Catalog> newCt=null;
+        Catalog ct=null;
+        try {
+            DAO_Catalog dao = new DAO_Catalog();
+            dao.insert(this.catalog);
+            newCt=dao.find(this.catalog);
+            ct = newCt.get(0);
+
+        } catch (Exception ex) {
+
+            System.out.println(ex.getMessage());
+        }
+        Assertions.assertEquals(this.catalog.toString(),ct.toString());
+    }
+
+    @Test
+    void pushNewGoodInBase(){
+        ArrayList<Catalog> newCt=null;
+        Catalog ct=null;
+        try {
+            this.catalog.pushNewGoodInBase(this.catalog);
+            newCt=this.catalog.findInBase(this.catalog);
+            ct = newCt.get(0);
+
+        } catch (Exception ex) {
+
+            System.out.println(ex.getMessage());
+        }
+        Assertions.assertEquals(this.catalog.toString(),ct.toString());
+    }
+    /*@Test
     void getAndSaveCatalogFromBase() {
         ArrayList<Catalog> list = new ArrayList();
         list.add(this.catalog);
+        DAO_Catalog dao_catalog = new DAO_Catalog();
         this.catalog.saveCatalogToBase(list, "catalog.dat");
         new ArrayList();
         ArrayList<Catalog> list2 = this.catalog.getCatalogFromBase();
         Assertions.assertEquals(list.toString(), list2.toString());
-    }
+    }*/
 
     @Test
     void chooseMethodToSearch() {
